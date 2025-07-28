@@ -12,7 +12,7 @@ from email.message import EmailMessage
 from email.utils import parseaddr, getaddresses
 
 EMAIL = 'aryan.mamania@fosteringlinux.com'
-PASSWORD = 'ftng tlhy hycc olcv'
+PASSWORD = '**** **** '
 IMAP_SERVER = 'imap.gmail.com'
 SMTP_SERVER = 'smtp.gmail.com'
 SMTP_PORT = 465
