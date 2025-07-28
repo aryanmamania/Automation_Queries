@@ -1,0 +1,48 @@
+- name: Execute SQL query on PostgreSQL DB
+  hosts: dbserver
+  gather_facts: false
+  vars:
+    db_user: testuser
+    db_password: testpass
+    db_host: 127.0.0.1
+    db_port: 5432
+
+  tasks:
+    - name: Read SQL query from file
+      slurp:
+        src: "{{ sql_file }}"
+      register: raw_sql
+
+    - name: Decode SQL query content
+      set_fact:
+        query_text: "{{ raw_sql.content | b64decode }}"
+
+    - name: Run SQL query
+      community.postgresql.postgresql_query:
+        login_host: "{{ db_host }}"
+        login_port: "{{ db_port }}"
+        login_user: "{{ db_user }}"
+        login_password: "{{ db_password }}"
+        db: "{{ db_name }}"
+        query: "{{ query_text }}"
+      register: query_result
+
+    - name: Print SQL query result
+      debug:
+        msg: |
+           Your query has been executed.
+
+           Database: {{ db_name }}
+           Query:
+           {{ query_text }}
+
+           Result:
+           {% if query_result.query_result is defined and query_result.query_result %}
+           {% for row in query_result.query_result %}
+            - {{ row }}
+           {% endfor %}
+           {% elif query_result.rowcount is defined %}
+           {{ query_result.rowcount }} row(s) affected.
+           {% else %}
+           Query executed. No output returned.
+           {% endif %}

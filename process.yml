@@ -1,0 +1,7 @@
+---
+- name: Process sample email query and run queries
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Run Python email processor
+      script: fetch_and_execute.py
